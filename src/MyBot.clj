@@ -1,5 +1,5 @@
 (ns MyBot
-  (:use ants))
+  (:use ants.ants))
 
 (def directions [:north :east :west :south])
 

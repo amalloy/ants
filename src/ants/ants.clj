@@ -1,4 +1,4 @@
-(ns ants
+(ns ants.ants
   (:require [clojure.string :as string]))
 
 ;;****************************************************************
@@ -97,18 +97,10 @@
   "Return the location defined by moving the given ant in the given
   direction."
   [ant dir]
-  (let [dir-vector (dir-offset dir)
-        rows (*game-info* :rows)
-        cols (*game-info* :cols)
-        [r c] (map + ant dir-vector)]
-    [(cond 
-       (< r 0) (+ rows r) 
-       (>= r rows) (- r rows)
-       :else r)
-     (cond 
-       (< c 0) (+ cols c) 
-       (>= c cols) (- c cols)
-       :else c)]))
+  (map #(mod %3 (+ %1 %2))
+       ant
+       (dir-offset dir)
+       ((juxt :rows :cols) *game-info*)))
 
 
 ;;****************************************************************
