@@ -91,16 +91,19 @@
 (defn- contains-ant? [ants cur]
   (some #(let [[r c p] %]
              (= [r c] cur))
-          ants))
+        ants))
 
-(defn- move-ant 
+(defn move-offset [ant offset]
+  (map #(mod %3 (+ %1 %2))
+       ant
+       offset
+       ((juxt :rows :cols) *game-info*)))
+
+(defn move-ant 
   "Return the location defined by moving the given ant in the given
   direction."
   [ant dir]
-  (map #(mod %3 (+ %1 %2))
-       ant
-       (dir-offset dir)
-       ((juxt :rows :cols) *game-info*)))
+  (move-offset ant (dir-offset dir)))
 
 
 ;;****************************************************************
@@ -181,9 +184,8 @@
 (defn unoccupied? 
   "If the given location does not contain an ant, return loc"
   [loc]
-  (when (and (not (contains-ant? (my-ants) loc))
-             (not (contains-ant? (enemy-ants) loc)))
-    loc))
+  (not-any? #(contains-ant? % loc)
+            [(my-ants) (enemy-ants)]))
 
 (defn direction [loc loc2]
   "Determine the directions needed to move to reach a specific location.
